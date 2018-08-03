@@ -1,6 +1,7 @@
 
 import os, re
 
+from debug import *
 from pojo import *
 
 class Parser:
@@ -9,9 +10,10 @@ class Parser:
 
     def translate(self, fullCode):
         # fullCode such as android.support.design.widget.TabLayout.g(xxyy)
-        print('translate "%s"' % fullCode)
+        if DEBUG:
+            print('translate "%s"' % fullCode)
 
-        m = re.match('(.*).([^\.]+)(\(.*\))', fullCode)
+        m = re.match('(.*)\.([^\.]+)(\(.*\))', fullCode)
         if not m:
             return fullCode
 
@@ -51,26 +53,31 @@ def parse(mappingFile):
             if c:
                 if currentClass:
                     finalResult[currentClass.mappingName] = currentClass
-                # print('match a class %s' % c)
+                if DEBUG:
+                    print('match a class %s' % c)
                 currentClass = c
                 continue
             f = functionParser.match(line)
             if f:
                 assert currentClass, "mapping file should start with a class"
                 currentClass.add(f)
-                # print('match a function %s' % f)
+                if DEBUG:
+                    print('match a function %s' % f)
                 continue
             m = memberParser.match(line)
             if m:
                 assert currentClass, "mapping file should start with a class"
                 currentClass.add(m)
-                # print('match a member %s' % m)
+                if DEBUG:
+                    print('match a member %s' % m)
                 continue
 
+    if currentClass:
+        finalResult[currentClass.mappingName] = currentClass
+
     # print it
-    for x in finalResult:
-#        print(x)
-        pass
+    if DEBUG:
+        print(finalResult)
     print('parse end')
     return finalResult
 
