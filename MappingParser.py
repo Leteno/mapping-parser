@@ -3,10 +3,40 @@ import os, re
 
 from pojo import *
 
-CLASS_STEP = 1
-MEMBER_STEP = 2
+class Parser:
+    def __init__(self, mappingFile):
+        self.finalDict = parse(mappingFile)
+
+    def translate(self, fullCode):
+        # fullCode such as android.support.design.widget.TabLayout.g(xxyy)
+        print('translate "%s"' % fullCode)
+
+        m = re.match('(.*).([^\.]+)(\(.*\))', fullCode)
+        if not m:
+            return fullCode
+
+        className = m.group(1)
+        functionName = m.group(2)
+        others = m.group(3)
+        if className not in self.finalDict:
+            return fullCode
+        classC = self.finalDict[className]
+        actualClassName = classC.name
+        actualFunctionName = functionName
+        actualFunction = classC.get(functionName, isFunction=True)
+        if actualFunction:
+            actualFunctionName = actualFunction.name
+
+        if others:
+            return "%s.%s%s" % (actualClassName, actualFunctionName, others)
+        else:
+            return "%s.%s" % (actualClassName, actualFunctionName)
+
+
 def parse(mappingFile):
     assert os.path.exists(mappingFile), "mappingFile %s is not exists" % mappingFile
+
+    print('parsing')
 
     finalResult = {} # mappingName -> Class
 
@@ -17,31 +47,31 @@ def parse(mappingFile):
     currentClass = None
     with open(mappingFile, 'r') as f:
         for line in f:
-            print(line)
             c = classParser.match(line)
             if c:
                 if currentClass:
                     finalResult[currentClass.mappingName] = currentClass
-                print('match a class %s' % c)
+                # print('match a class %s' % c)
                 currentClass = c
                 continue
             f = functionParser.match(line)
             if f:
                 assert currentClass, "mapping file should start with a class"
                 currentClass.add(f)
-                print('match a function %s' % f)
+                # print('match a function %s' % f)
                 continue
             m = memberParser.match(line)
             if m:
                 assert currentClass, "mapping file should start with a class"
                 currentClass.add(m)
-                print('match a member %s' % m)
+                # print('match a member %s' % m)
                 continue
 
     # print it
     for x in finalResult:
 #        print(x)
         pass
+    print('parse end')
     return finalResult
 
 class ClassParser:
@@ -84,7 +114,3 @@ class FunctionParser:
         arguments = m.group(7)
         mappingName = m.group(8)
         return Function(type, name, arguments, mappingName, oldLocation, newLocation)
-  
-
-import sys
-parse(sys.argv[1])
