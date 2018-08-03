@@ -7,13 +7,14 @@ from pojo import *
 class Parser:
     def __init__(self, mappingFile):
         self.finalDict = parse(mappingFile)
+        self.machine = re.compile('(.*)\.([^\.]+)(\(.*\))')
 
     def translate(self, fullCode):
         # fullCode such as android.support.design.widget.TabLayout.g(xxyy)
         if DEBUG:
             print('translate "%s"' % fullCode)
 
-        m = re.match('(.*)\.([^\.]+)(\(.*\))', fullCode)
+        m = self.machine.match(fullCode)
         if not m:
             return fullCode
 
