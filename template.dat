@@ -1,0 +1,18 @@
+FATAL EXCEPTION: main
+Process: com.zhihu.android, PID: 24534
+java.lang.NullPointerException: Attempt to invoke virtual method 'android.support.v4.app.Fragment com.zhihu.android.app.market.fragment.markethome.b.a(int)' on a null object reference
+at com.zhihu.android.app.market.fragment.MarketFragment2.c(MarketFragment2.java:634)
+at com.zhihu.android.app.ui.activity.MainActivity.c(MainActivity.java:1171)
+at android.support.design.widget.TabLayout.g(TabLayout.java:1177)
+at android.support.design.widget.TabLayout.b(TabLayout.java:1136)
+at android.support.design.widget.TabLayout.b(TabLayout.java:1128)
+at android.support.design.widget.TabLayout$e.f(TabLayout.java:1427)
+at android.support.design.widget.TabLayout$g.performClick(TabLayout.java:1537)
+at android.view.View$PerformClick.run(View.java:24931)
+at android.os.Handler.handleCallback(Handler.java:808)
+at android.os.Handler.dispatchMessage(Handler.java:101)
+at android.os.Looper.loop(Looper.java:166)
+at android.app.ActivityThread.main(ActivityThread.java:7425)
+at java.lang.reflect.Method.invoke(Native Method)
+at com.android.internal.os.Zygote$MethodAndArgsCaller.run(Zygote.java:245)
+at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:921)
